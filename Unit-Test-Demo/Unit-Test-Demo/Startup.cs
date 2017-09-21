@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Unit_Test_Demo.DAL;
 
 namespace Unit_Test_Demo
 {
@@ -29,6 +27,11 @@ namespace Unit_Test_Demo
         {
             // Add framework services.
             services.AddMvc();
+
+            //DI
+            var sqlConnection = Configuration.GetSection("ConnectionStrings:Sql").Value;
+            services
+                .AddDbContext<DemoContext>(options => options.UseSqlServer(sqlConnection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

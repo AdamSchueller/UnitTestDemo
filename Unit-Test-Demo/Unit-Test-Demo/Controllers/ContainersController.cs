@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Unit_Test_Demo.Commands;
@@ -47,13 +48,18 @@ namespace Unit_Test_Demo.Controllers
         {
             var container = _context.Containers.FirstOrDefault(c => c.Id == id);
 
+            if (container == null)
+            {
+                throw new ObjectNotFoundException($"Pack failed: container with ID [{id}] not found!");
+            }
+
             if (container.CurrentCapacity < container.MaxCapacity)
             {
                 container.CurrentCapacity++;
             }
             else
             {
-                throw new Exception("Pack failed: container is already at maximum capacity!");
+                throw new InvalidOperationException("Pack failed: container is already at maximum capacity!");
             }
         }   
     }

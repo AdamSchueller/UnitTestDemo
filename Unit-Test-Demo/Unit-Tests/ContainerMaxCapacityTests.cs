@@ -49,7 +49,7 @@ namespace Unit.Tests
             _context.SaveChanges();
 
             //Act & Assert
-            Assert.Throws<Exception>(() => _containerController.PackItemIntoContainer(container.Id));
+            Assert.Throws<InvalidOperationException>(() => _containerController.PackItemIntoContainer(container.Id));
 
         }
     }
