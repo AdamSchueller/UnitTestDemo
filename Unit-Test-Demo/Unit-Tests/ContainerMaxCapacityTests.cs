@@ -1,4 +1,5 @@
 ﻿using System;
+using Unit_Test_Demo.Commands;
 using Unit_Test_Demo.Controllers;
 using Unit_Test_Demo.DAL;
 using Unit_Test_Demo.Domain;
@@ -15,6 +16,37 @@ namespace Unit.Tests
         {
             _context = fixture.Context;
             _containerController = new ContainersController(fixture.Context);
+        }
+
+        [Fact]
+        public void Can_create_container_when_max_capacity_valid()
+        {
+            //Arrange
+            var createCommand = new CreateContainerCommand
+            {
+                MaxCapacity = 1
+            };
+
+            //Act
+            var newContainerId = _containerController.CreateContainer(createCommand);
+            var newContainer = _containerController.GetContainerById(newContainerId);
+
+            //Assert
+            Assert.NotNull(newContainer);
+            Assert.Equal(newContainer.MaxCapacity, 1);
+        }
+
+        [Fact]
+        public void Can_not_create_container_when_max_capacity_invalid()
+        {
+            //Arrange
+            var createCommand = new CreateContainerCommand
+            {
+                MaxCapacity = -1
+            };
+
+            //Act & Assert
+            Assert.Throws<ArgumentException>(() => _containerController.CreateContainer(createCommand));
         }
 
         [Fact]
@@ -37,7 +69,7 @@ namespace Unit.Tests
         }
 
         [Fact]
-        public void Can_not_pack_when_current_capacity_greater_than_or_equal_to_max_capacity()
+        public void Can_not_pack_when_current_capacity_equal_to_max_capacity()
         {
             //Arrange
             var container = new Container
@@ -50,7 +82,22 @@ namespace Unit.Tests
 
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => _containerController.PackItemIntoContainer(container.Id));
+        }
 
+        [Fact]
+        public void Can_not_pack_when_current_capacity_greater_than_max_capacity()
+        {
+            //Arrange
+            var container = new Container
+            {
+                CurrentCapacity = 4,
+                MaxCapacity = 3
+            };
+            _context.Containers.Add(container);
+            _context.SaveChanges();
+
+            //Act & Assert
+            Assert.Throws<InvalidOperationException>(() => _containerController.PackItemIntoContainer(container.Id));
         }
     }
 }

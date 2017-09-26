@@ -32,8 +32,13 @@ namespace Unit_Test_Demo.Controllers
         }
 
         [HttpPost]
-        public void CreateContainer([FromBody]CreateContainerCommand command)
+        public int CreateContainer([FromBody]CreateContainerCommand command)
         {
+            if (command.MaxCapacity < 0)
+            {
+                throw new ArgumentException("Create container failed: max capacity must be a positive integer!");
+            }
+
             var newContainer = new Container
             {
                 MaxCapacity = command.MaxCapacity
@@ -41,6 +46,8 @@ namespace Unit_Test_Demo.Controllers
 
             _context.Containers.Add(newContainer);
             _context.SaveChanges();
+
+            return newContainer.Id;
         }
 
         [HttpPost("{id}/pack")]
@@ -56,6 +63,7 @@ namespace Unit_Test_Demo.Controllers
             if (container.CurrentCapacity < container.MaxCapacity)
             {
                 container.CurrentCapacity++;
+                _context.SaveChanges();
             }
             else
             {
