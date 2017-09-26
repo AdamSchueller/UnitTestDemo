@@ -60,7 +60,7 @@ namespace Unit_Test_Demo.Controllers
                 throw new ObjectNotFoundException($"Pack failed: container with ID [{id}] not found!");
             }
 
-            if (container.CurrentCapacity < container.MaxCapacity)
+            if (container.MaxCapacity == 0 || container.CurrentCapacity < container.MaxCapacity)
             {
                 container.CurrentCapacity++;
                 _context.SaveChanges();

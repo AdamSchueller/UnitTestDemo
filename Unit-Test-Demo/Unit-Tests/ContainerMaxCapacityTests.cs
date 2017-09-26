@@ -63,9 +63,30 @@ namespace Unit.Tests
         
             //Act
             _containerController.PackItemIntoContainer(container.Id);
+            container = _containerController.GetContainerById(container.Id); //read back
 
             //Assert
             Assert.Equal(container.CurrentCapacity, 2);
+        }
+
+        [Fact]
+        public void Can_pack_when_max_capacity_is_zero()
+        {
+            //Arrange
+            var container = new Container
+            {
+                CurrentCapacity = 999999,
+                MaxCapacity = 0
+            };
+            _context.Containers.Add(container);
+            _context.SaveChanges();
+
+            //Act
+            _containerController.PackItemIntoContainer(container.Id);
+            container = _containerController.GetContainerById(container.Id); //read back
+
+            //Assert
+            Assert.Equal(container.CurrentCapacity, 1000000);
         }
 
         [Fact]
