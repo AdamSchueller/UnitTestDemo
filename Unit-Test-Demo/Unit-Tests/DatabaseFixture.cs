@@ -11,8 +11,7 @@ namespace Unit.Tests
         public DatabaseFixture()
         {
             var connectionString = "Server=localhost;Database=UnitTestDemo;Trusted_Connection=True";
-            var builder = new DbContextOptionsBuilder();
-            builder.UseSqlServer(connectionString);
+            var builder = new DbContextOptionsBuilder().UseSqlServer(connectionString);
             Context = new DemoContext(builder.Options);
 
             Context.Database.ExecuteSqlCommand("TRUNCATE TABLE [Containers]");
