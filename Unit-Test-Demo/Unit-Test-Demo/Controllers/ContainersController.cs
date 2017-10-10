@@ -12,23 +12,23 @@ namespace Unit_Test_Demo.Controllers
     [Route("api/[controller]")]
     public class ContainersController : Controller
     {
-        private readonly DemoContext _context;
+        private readonly IContainerRepository _repo;
 
-        public ContainersController(DemoContext context)
+        public ContainersController(IContainerRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         [HttpGet]
         public List<Container> GetAllContainers()
         {
-            return _context.Containers.ToList();
+            return _repo.FindAllContainers().ToList();
         }
 
         [HttpGet("{id}")]
         public Container GetContainerById(int id)
         {
-            return _context.Containers.FirstOrDefault(c => c.Id == id);
+            return _repo.FindContainerById(id);
         }
 
         [HttpPost]
@@ -44,8 +44,7 @@ namespace Unit_Test_Demo.Controllers
                 MaxCapacity = command.MaxCapacity
             };
 
-            _context.Containers.Add(newContainer);
-            _context.SaveChanges();
+            _repo.AddContainer(newContainer);
 
             return newContainer.Id;
         }
@@ -53,7 +52,7 @@ namespace Unit_Test_Demo.Controllers
         [HttpPost("{id}/pack")]
         public void PackItemIntoContainer(int id)
         {
-            var container = _context.Containers.FirstOrDefault(c => c.Id == id);
+            var container = _repo.FindContainerById(id);
 
             if (container == null)
             {
@@ -63,7 +62,7 @@ namespace Unit_Test_Demo.Controllers
             if (container.MaxCapacity == 0 || container.CurrentCapacity < container.MaxCapacity)
             {
                 container.CurrentCapacity++;
-                _context.SaveChanges();
+                _repo.UpdateContainer(container);
             }
             else
             {

@@ -32,6 +32,8 @@ namespace Unit_Test_Demo
             var sqlConnection = Configuration.GetSection("ConnectionStrings:Sql").Value;
             services
                 .AddDbContext<DemoContext>(options => options.UseSqlServer(sqlConnection));
+
+            services.AddTransient<IContainerRepository, ContainerRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

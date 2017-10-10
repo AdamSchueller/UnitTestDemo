@@ -7,15 +7,15 @@ using Xunit;
 
 namespace Unit.Tests
 {
-    public class ContainerMaxCapacityTests : IClassFixture<DatabaseFixture>
+    public class ContainerMaxCapacityTests : IClassFixture<ListRepositoryFixture>
     {
-        private readonly DemoContext _context;
+        private readonly IContainerRepository _repo;
         private readonly ContainersController _containerController;
 
-        public ContainerMaxCapacityTests(DatabaseFixture fixture)
+        public ContainerMaxCapacityTests(ListRepositoryFixture fixture)
         {
-            _context = fixture.Context;
-            _containerController = new ContainersController(fixture.Context);
+            _repo = fixture.Repo;
+            _containerController = new ContainersController(fixture.Repo);
         }
 
         [Fact]
@@ -58,8 +58,7 @@ namespace Unit.Tests
                 CurrentCapacity = 1,
                 MaxCapacity = 2
             };
-            _context.Containers.Add(container);
-            _context.SaveChanges();
+            _repo.AddContainer(container);
         
             //Act
             _containerController.PackItemIntoContainer(container.Id);
@@ -78,8 +77,7 @@ namespace Unit.Tests
                 CurrentCapacity = 999999,
                 MaxCapacity = 0
             };
-            _context.Containers.Add(container);
-            _context.SaveChanges();
+            _repo.AddContainer(container);
 
             //Act
             _containerController.PackItemIntoContainer(container.Id);
@@ -98,8 +96,7 @@ namespace Unit.Tests
                 CurrentCapacity = 3,
                 MaxCapacity = 3
             };
-            _context.Containers.Add(container);
-            _context.SaveChanges();
+            _repo.AddContainer(container);
 
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => _containerController.PackItemIntoContainer(container.Id));
@@ -114,8 +111,7 @@ namespace Unit.Tests
                 CurrentCapacity = 4,
                 MaxCapacity = 3
             };
-            _context.Containers.Add(container);
-            _context.SaveChanges();
+            _repo.AddContainer(container);
 
             //Act & Assert
             Assert.Throws<InvalidOperationException>(() => _containerController.PackItemIntoContainer(container.Id));
