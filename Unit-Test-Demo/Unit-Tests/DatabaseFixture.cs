@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Unit_Test_Demo.DAL;
-using Unit_Test_Demo.Domain;
 
 namespace Unit.Tests
 {

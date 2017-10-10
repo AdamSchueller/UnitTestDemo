@@ -7,12 +7,12 @@ using Xunit;
 
 namespace Unit.Tests
 {
-    public class ContainerMaxCapacityTests : IClassFixture<DatabaseFixture>
+    public class ContainerMaxCapacityTests : IClassFixture<InMemoryDatabaseFixture>
     {
         private readonly DemoContext _context;
         private readonly ContainersController _containerController;
 
-        public ContainerMaxCapacityTests(DatabaseFixture fixture)
+        public ContainerMaxCapacityTests(InMemoryDatabaseFixture fixture)
         {
             _context = fixture.Context;
             _containerController = new ContainersController(fixture.Context);
