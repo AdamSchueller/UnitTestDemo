@@ -18,11 +18,8 @@ namespace Unit.Tests
         public void Can_write_container()
         {
             //Arrange
-            var newContainer = new Container
-            {
-                CurrentCapacity = 1,
-                MaxCapacity = 2
-            };
+            var newContainer = new Container(2);
+            newContainer.UpdateCurrentCapacity(1);
 
             //Act
             var ex = Record.Exception(() =>

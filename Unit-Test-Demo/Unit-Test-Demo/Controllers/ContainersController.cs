@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
@@ -34,20 +33,10 @@ namespace Unit_Test_Demo.Controllers
         [HttpPost]
         public int CreateContainer([FromBody]CreateContainerCommand command)
         {
-            if (command.MaxCapacity < 0)
-            {
-                throw new ArgumentException("Create container failed: max capacity must be a positive integer!");
-            }
-
-            var newContainer = new Container
-            {
-                MaxCapacity = command.MaxCapacity
-            };
-
-            _context.Containers.Add(newContainer);
+            var container = new Container(command.MaxCapacity);
+            _context.Add(container);
             _context.SaveChanges();
-
-            return newContainer.Id;
+            return container.Id;
         }
 
         [HttpPost("{id}/pack")]
@@ -60,15 +49,9 @@ namespace Unit_Test_Demo.Controllers
                 throw new ObjectNotFoundException($"Pack failed: container with ID [{id}] not found!");
             }
 
-            if (container.MaxCapacity == 0 || container.CurrentCapacity < container.MaxCapacity)
-            {
-                container.CurrentCapacity++;
-                _context.SaveChanges();
-            }
-            else
-            {
-                throw new InvalidOperationException("Pack failed: container is already at maximum capacity!");
-            }
+            container.Pack();
+
+            _context.SaveChanges();
         }   
     }
 }
